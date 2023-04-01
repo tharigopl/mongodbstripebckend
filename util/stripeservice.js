@@ -19,16 +19,16 @@ async function createStripeAccount(stripeuser) {
 //       address
 //     )}&key=${API_KEY}`
 //   );
-console.log("Steripe service createStripeAccount",stripeuser);
+//console.log("Steripe service createStripeAccount",stripeuser);
 // stripeuser['first_name'] = stripeuser.name;
 // stripeuser['last_name'] = stripeuser.name;
 // stripeuser['individual']['first_name'] = stripeuser.name;
 // stripeuser['individual']['last_name'] = "stripeuser.name";
 // stripeuser['individual']['email'] = stripeuser.email;
-stripeuser['business_type'] = "individual";
-  stripeuser['country'] = 'US';
-  stripeuser['type'] = 'express';
-  stripeuser['first_name'] = stripeuser.name;
+// stripeuser['business_type'] = "individual";
+//   stripeuser['country'] = 'US';
+//   stripeuser['type'] = 'express';
+//   stripeuser['first_name'] = stripeuser.name;
   
 const stripeUserData = {};
 stripeUserData['business_type'] = 'individual';
@@ -40,16 +40,16 @@ stripeUserData['individual'] = {
   'first_name' : stripeuser.first_name,
   'email': stripeuser.email
 };
-console.log("Stripe user data cloned ", stripeUserData);
+//console.log("Stripe user data cloned ", stripeUserData);
  
   
-  console.log("Steripe service createStripeAccount 1",stripeuser);
+  //console.log("Steripe service createStripeAccount 1",stripeuser);
 
 const account = await stripe.accounts.create(stripeUserData);
 
-console.log("Steripe service createStripeAccount", JSON.stringify(account));
+//console.log("Steripe service createStripeAccount", JSON.stringify(account));
 
-console.log("Account id ", account.id);
+
 // Create an account link for the user's Stripe account
 const accountLink = await stripe.accountLinks.create({
   account: account.id,
@@ -57,22 +57,24 @@ const accountLink = await stripe.accountLinks.create({
   return_url: config.publicDomain + '/api/stripeusers/onboarded',
   type: 'account_onboarding'
 });
+console.log("Account link ", accountLink);
+account['accountLink'] = accountLink;
+//console.log("Account id ", account);
+//console.log("Steripe service createStripeAaccount url link ", accountLink.url);
 
-console.log("Steripe service createStripeAaccount url link ", accountLink.url);
+  // const data = response.data;
 
-  const data = response.data;
+  // if (!data || data.status === 'ZERO_RESULTS') {
+  //   const error = new HttpError(
+  //     'Could not find location for the specified address.',
+  //     422
+  //   );
+  //   throw error;
+  // }
 
-  if (!data || data.status === 'ZERO_RESULTS') {
-    const error = new HttpError(
-      'Could not find location for the specified address.',
-      422
-    );
-    throw error;
-  }
+  // const stripeuserResp = data.results[0];
 
-  const stripeuserResp = data.results[0];
-
-  return stripeuserResp;
+  return account;
 }
 
 module.exports = createStripeAccount;
