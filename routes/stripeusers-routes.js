@@ -33,7 +33,7 @@ router.get('/', stripeusersController.getStripeUsers);
 
 router.post('/signup', async (req, res, next) => {
     const errors = validationResult(req);
-    console.log("Error ^^^^^^^^^^^^^^^ ");
+    //console.log("Error ^^^^^^^^^^^^^^^ ");
     if (!errors.isEmpty()) {
       return next(
         new HttpError('Invalid inputs passed, please check your data.', 422)
@@ -75,6 +75,14 @@ router.post('/signup', async (req, res, next) => {
       const response = await stripuse.save();
       console.log("created Stripe user 2 ##^^^^^^^^^^^^####", response);
 
+      await req.logIn(response, err => {
+            if (err) next(err);
+            return res.redirect('/stripeusers/signup');
+          });
+      // req.logIn(response, err => {
+      //     if (err) next(err);
+      //     return res.redirect('/stripeusers/signup');
+      //   });
       // req.logIn(response, err => {
       //   if (err) next(err);
       //   return res.redirect('/stripeusers/signup');
